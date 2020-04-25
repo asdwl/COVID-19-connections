@@ -16,7 +16,9 @@ knitr::opts_chunk$set(comment = "#>", collapse = TRUE, screenshot.force = FALSE)
 library(openxlsx)
 ```
 
-## Formatted PubMed data
+## PubMed data mining
+
+### Meta
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 raw_cor <- jsonlite::read_json("../cor/raw.json")
@@ -29,7 +31,7 @@ DT::datatable(x, extensions = c("Buttons", "FixedColumns", "Responsive"),
                    searchHighlight = TRUE, columnDefs = list(list(width="100px", targets="_all"))))
 ```
 
-## Label with countries and cities
+### Label with countries and cities
 
 ```{r, echo=FALSE}
 countries_cities <- read.xlsx("../cor/abs_countries_cities.xlsx")
