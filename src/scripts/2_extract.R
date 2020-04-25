@@ -20,20 +20,20 @@ json2simptb <- function(infile, kwfile, outprefix) {
   file.remove(paste0(outprefix, c(".csv", ".json")))
 }
 
-if (!file.exists("cor/raw.json")) {
+if (!file.exists("result/cor/raw.json")) {
   cmd = sprintf("bioextr --mode pubmed -t 60 data/pubmed/xml/*.json > cor/raw.json")
   system(cmd)
 }
 
-if (!file.exists("cor/abs_countries_cities.xlsx")) {
+if (!file.exists("result/cor/abs_countries_cities.xlsx")) {
   kw <- paste0("[^0-9a-zA-Z]", c(countries, cities), "[^0-9a-zA-Z]")
   ct <- paste0(c(countries, cities), "[^0-9a-zA-Z]")
   cat(ct, file = "/tmp/bioextr.kws", sep = "\n")
-  json2simptb("data/pubmed/xml/*.json", "/tmp/bioextr.kws", "cor/abs_countries_cities")
+  json2simptb("data/pubmed/xml/*.json", "/tmp/bioextr.kws", "result/cor/abs_countries_cities")
 }
 
-if (!file.exists("cor/abs_genes.xlsx")) {
-  if (!file.exists("cor/abs_genes.json")) {
+if (!file.exists("result/cor/abs_genes.xlsx")) {
+  if (!file.exists("result/cor/abs_genes.json")) {
     hgnc <- as.data.frame(fread("data/ref/hgnc-simple.txt"))
     alias_name <- unlist(str_split(hgnc[,"alias_name"], fixed("|")))
     alias_name <- alias_name[alias_name != ""]
@@ -47,6 +47,6 @@ if (!file.exists("cor/abs_genes.xlsx")) {
     refseq_accession <- refseq_accession[refseq_accession != ""]
     kw <- paste0("[^0-9a-zA-Z]", c(hgnc$symbol, alias_symbol), "[^0-9a-zA-Z]")
     cat(kw, file = "/tmp/bioextr.kws", sep = "\n")
-    json2simptb("data/pubmed/xml/*.json", "/tmp/bioextr.kws", "cor/abs_genes")
+    json2simptb("data/pubmed/xml/*.json", "/tmp/bioextr.kws", "result/cor/abs_genes")
   }
 }
