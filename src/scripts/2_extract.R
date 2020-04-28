@@ -33,20 +33,25 @@ if (!file.exists("result/cor/abs_countries_cities.xlsx")) {
 }
 
 if (!file.exists("result/cor/abs_genes.xlsx")) {
-  if (!file.exists("result/cor/abs_genes.json")) {
-    hgnc <- as.data.frame(fread("data/ref/hgnc-simple.txt"))
-    alias_name <- unlist(str_split(hgnc[,"alias_name"], fixed("|")))
-    alias_name <- alias_name[alias_name != ""]
-    alias_symbol <- unlist(str_split(hgnc[,"alias_symbol"], fixed("|")))
-    alias_symbol <- alias_symbol[alias_symbol != ""]
-    ccds_id <- unlist(str_split(hgnc[,"ccds_id"], fixed("|")))
-    ccds_id <- ccds_id[ccds_id != ""]
-    uniprot_ids <- unlist(str_split(hgnc[,"uniprot_ids"], fixed("|")))
-    uniprot_ids <- uniprot_ids[uniprot_ids != ""]
-    refseq_accession <- unlist(str_split(hgnc[,"refseq_accession"], fixed("|")))
-    refseq_accession <- refseq_accession[refseq_accession != ""]
-    kw <- paste0("[^0-9a-zA-Z]", c(hgnc$symbol, alias_symbol), "[^0-9a-zA-Z]")
-    cat(kw, file = "/tmp/bioextr.kws", sep = "\n")
-    json2simptb("data/pubmed/xml/*.json", "/tmp/bioextr.kws", "result/cor/abs_genes")
-  }
+  hgnc <- as.data.frame(fread("data/ref/hgnc-simple.txt"))
+  alias_name <- unlist(str_split(hgnc[,"alias_name"], fixed("|")))
+  alias_name <- alias_name[alias_name != ""]
+  alias_symbol <- unlist(str_split(hgnc[,"alias_symbol"], fixed("|")))
+  alias_symbol <- alias_symbol[alias_symbol != ""]
+  ccds_id <- unlist(str_split(hgnc[,"ccds_id"], fixed("|")))
+  ccds_id <- ccds_id[ccds_id != ""]
+  uniprot_ids <- unlist(str_split(hgnc[,"uniprot_ids"], fixed("|")))
+  uniprot_ids <- uniprot_ids[uniprot_ids != ""]
+  refseq_accession <- unlist(str_split(hgnc[,"refseq_accession"], fixed("|")))
+  refseq_accession <- refseq_accession[refseq_accession != ""]
+  kw <- paste0("[^0-9a-zA-Z]", c(hgnc$symbol, alias_symbol), "[^0-9a-zA-Z]")
+  cat(kw, file = "/tmp/bioextr.kws", sep = "\n")
+  json2simptb("data/pubmed/xml/*.json", "/tmp/bioextr.kws", "result/cor/abs_genes")
+}
+
+if (!file.exists("result/cor/abs_treatment.xlsx")) {
+  items <- "COVID-19, SARS, patient, death, die, dying, dyspnea, complication, symptom, relapse, remission, life-support, machine, drug, medicine, agent, treatment, therapy, therapeutics, intervention"
+  kw <- paste0("[^0-9a-zA-Z]", unlist(str_split(items, ", ")), "[^0-9a-zA-Z]")
+  cat(kw, file = "/tmp/bioextr.kws", sep = "\n")
+  json2simptb("data/pubmed/xml/*.json", "/tmp/bioextr.kws", "result/cor/abs_treatment")
 }
