@@ -9,13 +9,13 @@ As of 2020-04-23, we collected a total of 5,758 publications records from PubMed
 Todo:
 
 - [ ] collect all avaliable APIs related to COVID-19
-- [ ] fetch preprint resource
 - [ ] label the gene pathway
 - [ ] label the drug and treatment
 - [ ] web interface and API
 
 In progress:
 
+- [ ] fetch preprint resource
 - [ ] fetch the open access and subscribed fulltext 
 - [ ] label the countries and cities (abstract and fulltext)
 - [ ] label the gene symbol (abstract and fulltext)
