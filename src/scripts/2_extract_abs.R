@@ -20,12 +20,13 @@ genesKw <- function () {
   refseq_accession <- unlist(str_split(hgnc[,"refseq_accession"], fixed("|")))
   refseq_accession <- refseq_accession[refseq_accession != ""]
   genes <- c(hgnc$symbol, alias_symbol)
-  gnees <- genes[!genes %in% c("B", "mol")]
+  genes <- genes[str_length(genes) > 1]
+  genes <- genes[!genes %in% c("B", "mol")]
   kw <- paste0("[^0-9a-zA-Z]", genes, "[^0-9a-zA-Z]")
   return (kw)
 }
 json2simptb <- function(infile, kwfile, outprefix) {
-  cmd = sprintf("bioextr --mode pubmed --call-cor --keywords-file %s -t 20 %s > %s.json && json2csv -i %s.json -o %s.csv",
+  cmd = sprintf("bioextr --mode pubmed --call-cor --keywords-file %s -t 30 %s > %s.json && json2csv -i %s.json -o %s.csv",
                  kwfile, infile, outprefix, outprefix, outprefix)
   system(cmd)
   dat <- as.data.frame(fread(sprintf("%s.csv", outprefix)))
@@ -34,7 +35,7 @@ json2simptb <- function(infile, kwfile, outprefix) {
     dat[,i] <- str_replace_all(dat[,i], '""', '"')
   }
   write.xlsx(dat, sprintf("%s.xlsx", outprefix))
-  file.remove(paste0(outprefix, c(".csv", ".json")))
+  file.remove(paste0(outprefix, c(".csv")))
 }
 
 json2simptb2 <- function(infile, kwfile, outprefix) {
@@ -47,11 +48,11 @@ json2simptb2 <- function(infile, kwfile, outprefix) {
     dat[,i] <- str_replace_all(dat[,i], '""', '"')
   }
   write.xlsx(dat, sprintf("%s.xlsx", outprefix))
-  file.remove(paste0(outprefix, c(".csv", ".json")))
+  file.remove(paste0(outprefix, c(".csv")))
 }
 
 if (!file.exists("result/cor/pubmed.json")) {
-  cmd = sprintf("bioextr --mode pubmed -t 60 data/pubmed/xml/*.json > cor/pubmed.json")
+  cmd = sprintf("bioextr --mode pubmed -t 60 data/pubmed/xml/*.json --call-urls --keep-abs > result/cor/pubmed.json")
   system(cmd)
 }
 

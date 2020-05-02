@@ -21,12 +21,13 @@ genesKw <- function () {
   refseq_accession <- unlist(str_split(hgnc[,"refseq_accession"], fixed("|")))
   refseq_accession <- refseq_accession[refseq_accession != ""]
   genes <- c(hgnc$symbol, alias_symbol)
-  gnees <- genes[!genes %in% c("B", "mol")]
+  genes <- genes[str_length(genes) > 1]
+  genes <- genes[!genes %in% c("B", "mol")]
   kw <- paste0("[^0-9a-zA-Z]", genes, "[^0-9a-zA-Z]")
   return (kw)
 }
 json2simptb <- function(infile, kwfile, outprefix) {
-  cmd = sprintf("bioextr --mode plain --call-cor --keywords-file %s -t 20 -l %s > %s.json && json2csv -i %s.json -o %s.csv",
+  cmd = sprintf("bioextr --mode plain --call-cor --keywords-file %s -t 30 -l %s > %s.json && json2csv -i %s.json -o %s.csv",
                  kwfile, infile, outprefix, outprefix, outprefix)
   system(cmd)
   dat <- as.data.frame(fread(sprintf("%s.csv", outprefix)))
@@ -37,17 +38,10 @@ json2simptb <- function(infile, kwfile, outprefix) {
     dat[,i] <- str_replace_all(dat[,i], '\n', ' ')
   }
   write.xlsx(dat, sprintf("%s.xlsx", outprefix))
-  file.remove(paste0(outprefix, c(".csv", ".json")))
+  file.remove(paste0(outprefix, c(".csv")))
 }
 
 files <- readLines("data/fulltext/plain_list")
-
-if (!file.exists("result/cor/fulltext_countries_cities.xlsx")) {
-  kw <- paste0("[^0-9a-zA-Z]", c(countries, cities), "[^0-9a-zA-Z]")
-  ct <- paste0(c(countries, cities))
-  cat(ct, file = "/tmp/bioextr.fulltext.kws", sep = "\n")
-  json2simptb("data/fulltext/plain_list", "/tmp/bioextr.fulltext.kws", "result/cor/fulltext_countries_cities")
-}
 
 if (!file.exists("result/cor/fulltext_genes.xlsx")) {
   kw <- genesKw()
